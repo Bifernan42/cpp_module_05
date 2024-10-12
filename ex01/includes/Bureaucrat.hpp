@@ -1,6 +1,5 @@
 #ifndef BUREAUCRAT_HPP
 # define BUREAUCRAT_HPP
-#include <exception>
 # include <iostream>
 #include <ostream>
 
@@ -23,24 +22,20 @@ class Bureaucrat
 		Bureaucrat &operator--();
 };
 
-class Bureaucrat::GradeTooHighException : public std::exception
+class Bureaucrat::GradeTooHighException
 {
-    private:
-        std::string message_;
+    std::string message_;
     public:
-        GradeTooHighException(const std::string) throw();
-        virtual const char *what() const throw();
-        ~GradeTooHighException() throw();
+        GradeTooHighException(const std::string);
+        std::string getMessage() const;
 };
 
-class Bureaucrat::GradeTooLowException : public std::exception
+class Bureaucrat::GradeTooLowException
 {
-    private:
-        std::string message_;
+    std::string message_;
     public:
-        GradeTooLowException(const std::string) throw();
-        virtual const char *what() const throw();
-        ~GradeTooLowException() throw();
+        GradeTooLowException(const std::string);
+        std::string getMessage() const;
 };
 
 std::ostream &operator<<(std::ostream &, const Bureaucrat &);

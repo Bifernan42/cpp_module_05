@@ -38,24 +38,24 @@ unsigned int Bureaucrat::getGrade() const
     return grade_;
 }
 
-Bureaucrat::GradeTooHighException::GradeTooHighException(const std::string msg) throw()
+Bureaucrat::GradeTooHighException::GradeTooHighException(const std::string msg)
 {
     message_ = msg;
 }
 
-Bureaucrat::GradeTooLowException::GradeTooLowException(const std::string msg) throw()
+std::string Bureaucrat::GradeTooHighException::getMessage() const
+{
+    return (message_);
+}
+
+Bureaucrat::GradeTooLowException::GradeTooLowException(const std::string msg)
 {
     message_ = msg;
 }
 
-const char* Bureaucrat::GradeTooHighException::what() const throw()
+std::string Bureaucrat::GradeTooLowException::getMessage() const
 {
-    return (message_.c_str());
-}
-
-const char* Bureaucrat::GradeTooLowException::what() const throw()
-{
-    return (message_.c_str());
+    return (message_);
 }
 
 std::ostream &operator<<(std::ostream &out, const Bureaucrat &b)
@@ -81,7 +81,3 @@ Bureaucrat &Bureaucrat::operator--()
         std::cerr << "Error : " << this->getName() << " cannot be demoted from the lowest grade !\n";
     return *this;
 }
-
-Bureaucrat::GradeTooLowException::~GradeTooLowException() throw() {}
-
-Bureaucrat::GradeTooHighException::~GradeTooHighException() throw() {}

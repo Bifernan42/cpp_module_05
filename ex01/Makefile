@@ -1,8 +1,8 @@
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iincludes
-SRCS = srcs/main.cpp srcs/Bureaucrat.cpp
+SRCS = srcs/main.cpp srcs/Bureaucrat.cpp srcs/Form.cpp
 OBJS = $(SRCS:.cpp=.o)
-NAME = animals.exe
+NAME = forms.exe
 
 all: $(NAME)
 

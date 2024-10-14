@@ -69,7 +69,7 @@ Bureaucrat &Bureaucrat::operator++()
     if (this->getGrade() > 1)
         this->grade_ -= 1;
     else
-        std::cerr << "Error : " << this->getName() << " has already reached the highest grade !\n";
+        throw Bureaucrat::GradeTooHighException("Error : Bureaucrat cannot be promoted: grade too high !\n");
     return *this;
 }
 
@@ -78,7 +78,7 @@ Bureaucrat &Bureaucrat::operator--()
     if (this->getGrade() < 150)
         this->grade_ += 1;
     else
-        std::cerr << "Error : " << this->getName() << " cannot be demoted from the lowest grade !\n";
+        throw Bureaucrat::GradeTooLowException("Error : Bureaucrat cannot be demoted :grade too low !\n");
     return *this;
 }
 

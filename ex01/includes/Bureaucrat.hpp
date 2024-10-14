@@ -1,7 +1,10 @@
 #ifndef BUREAUCRAT_HPP
 # define BUREAUCRAT_HPP
+#include <exception>
 # include <iostream>
 #include <ostream>
+//avoiding circular dependencies
+class Form;
 
 class Bureaucrat
 {
@@ -20,22 +23,27 @@ class Bureaucrat
 		unsigned int getGrade() const;
 		Bureaucrat &operator++();
 		Bureaucrat &operator--();
+		void signForm(Form &) const;
 };
 
-class Bureaucrat::GradeTooHighException
+class Bureaucrat::GradeTooHighException : public std::exception
 {
-    std::string message_;
+    private:
+        std::string message_;
     public:
-        GradeTooHighException(const std::string);
-        std::string getMessage() const;
+        GradeTooHighException(const std::string) throw();
+        virtual const char *what() const throw();
+        ~GradeTooHighException() throw();
 };
 
-class Bureaucrat::GradeTooLowException
+class Bureaucrat::GradeTooLowException : public std::exception
 {
-    std::string message_;
+    private:
+        std::string message_;
     public:
-        GradeTooLowException(const std::string);
-        std::string getMessage() const;
+        GradeTooLowException(const std::string) throw();
+        virtual const char *what() const throw();
+        ~GradeTooLowException() throw();
 };
 
 std::ostream &operator<<(std::ostream &, const Bureaucrat &);

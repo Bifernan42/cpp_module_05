@@ -1,13 +1,14 @@
 #include "../includes/Bureaucrat.hpp"
+#include "../includes/Form.hpp"
 
 Bureaucrat::Bureaucrat(): name_("noname"), grade_(150) {}
 
 Bureaucrat::Bureaucrat(std::string name, unsigned int grade): name_(name)
 {
     if (grade < 1)
-        throw Bureaucrat::GradeTooHighException("Error : provided grade is too High!");
+        throw Bureaucrat::GradeTooHighException("\033[31mError : provided grade is too High!\033[0m");
     else if (grade > 150)
-        throw Bureaucrat::GradeTooLowException("Error : provided grade is too Low!");
+        throw Bureaucrat::GradeTooLowException("\033[31mError : provided grade is too Low!\033[0m");
     else
         grade_ = grade;
 }
@@ -38,24 +39,24 @@ unsigned int Bureaucrat::getGrade() const
     return grade_;
 }
 
-Bureaucrat::GradeTooHighException::GradeTooHighException(const std::string msg)
+Bureaucrat::GradeTooHighException::GradeTooHighException(const std::string msg) throw()
 {
     message_ = msg;
 }
 
-std::string Bureaucrat::GradeTooHighException::getMessage() const
-{
-    return (message_);
-}
-
-Bureaucrat::GradeTooLowException::GradeTooLowException(const std::string msg)
+Bureaucrat::GradeTooLowException::GradeTooLowException(const std::string msg) throw()
 {
     message_ = msg;
 }
 
-std::string Bureaucrat::GradeTooLowException::getMessage() const
+const char* Bureaucrat::GradeTooHighException::what() const throw()
 {
-    return (message_);
+    return (message_.c_str());
+}
+
+const char* Bureaucrat::GradeTooLowException::what() const throw()
+{
+    return (message_.c_str());
 }
 
 std::ostream &operator<<(std::ostream &out, const Bureaucrat &b)
@@ -69,7 +70,7 @@ Bureaucrat &Bureaucrat::operator++()
     if (this->getGrade() > 1)
         this->grade_ -= 1;
     else
-        std::cerr << "Error : " << this->getName() << " has already reached the highest grade !\n";
+        throw Bureaucrat::GradeTooHighException("\033[31mError : Bureaucrat cannot be promoted: grade too high !\033[0m");
     return *this;
 }
 
@@ -78,6 +79,19 @@ Bureaucrat &Bureaucrat::operator--()
     if (this->getGrade() < 150)
         this->grade_ += 1;
     else
-        std::cerr << "Error : " << this->getName() << " cannot be demoted from the lowest grade !\n";
+        throw Bureaucrat::GradeTooLowException("\033[31mError : Bureaucrat cannot be demoted :grade too low !\033[0m");
     return *this;
+}
+
+Bureaucrat::GradeTooLowException::~GradeTooLowException() throw() {}
+
+Bureaucrat::GradeTooHighException::~GradeTooHighException() throw() {}
+
+void Bureaucrat::signForm(Form &f) const
+{
+    f.beSigned(*this);
+    if (f.getStatus())
+        std::cout << this->getName() << " signed " << f.getName() << ".\n";
+    else
+        std::cout << this->getName() << " couldn't sign " << f.getName() << "because its grade was too low.\n";
 }

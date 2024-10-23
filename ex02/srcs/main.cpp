@@ -1,8 +1,10 @@
 #include "../includes/Bureaucrat.hpp"
 #include "../includes/AForm.hpp"
+#include "../includes/PresidentialPardonForm.hpp"
+#include "../includes/RobotomyRequestForm.hpp"
+#include "../includes/ShrubberyCreationForm.hpp"
 #include <exception>
 #include <iostream>
-#include <mutex>
 #include <ostream>
 
 void test(const std::string &testmsg)
@@ -109,71 +111,131 @@ int main(void)
     std::cout << i;
     testOk(1);
 
-    //ex01
-    /////////////////////////////////////////////////////////////////////////////
-    test("AForms exceptions handling...");
-    cmsg("The logic is the same as before");
-    try{
-        AForm test("test form", 0, 160);
-    }
-    catch (std::exception &e1)
-    {
-        cmsg("catch's parameter should match the type of exception thrown\nWe pass it by reference to avoid object slicing.");
-        std::cerr << e1.what();
-        testOk(0);
-    }
+    //ex02
+        test("########## ex02 :: Constructors etc ... : ###################");
+    cmsg("first we instantiance a Shrubbery object [shrub_1] :");
+    ShrubberyCreationForm shrub_1("bigTarget");
+    cmsg("Here is [shrub_1] target :");
+    std::cout << shrub_1.getTarget() << std::endl;
+    cmsg("Then we instanciate a second object, [shrub_2] using the copy constructor : ");
+    ShrubberyCreationForm shrub_2(shrub_1);
+    cmsg("Here is [shrub_2] target :");
+    std::cout << shrub_2.getTarget() << std::endl;
+    cmsg("Now let's create a third Shruberry object [shrub_3] :");
+    ShrubberyCreationForm shrub_3("smallTarget");
+    cmsg("Here is [shrub_2] target :");
+    std::cout << shrub_3.getTarget() << std::endl;
+    cmsg("Now let's assign [shrub_2] to [shrub_3] and then display [shrub_3]'s target :");
+    shrub_3 = shrub_2;
+    std::cout << shrub_3.getTarget() << std::endl;
+    cmsg("We notice that everything works perfectly !");
+    testOk(1);
+
+    test("Polymorphism : ");
+    cmsg("Now we will be testing polymorphism through the declaration of 3 AForm * pointing to derived forms");
+    AForm *form_1 = new PresidentialPardonForm("target_1");
+    AForm *form_2 = new ShrubberyCreationForm("target_2");
+    AForm *form_3 = new RobotomyRequestForm("target_3");
+
+    cmsg("Let's display all 3 form informations using << overload:");
+    std::cout << "[form_1] : " << *form_1 << std::endl;
+    std::cout << "[form_2] : " << *form_2 << std::endl;
+    std::cout << "[form_3] : " << *form_3 << std::endl;
+    cmsg("That is followed by the instanciation of 3 more Bureaucrats");
+    Bureaucrat b1("A+", 1);
+    Bureaucrat b2("B", 75);
+    Bureaucrat b3("C", 150);
+    cmsg("Here are the Bureaucrats infos :");
+    std::cout << b1 << std::endl;
+    std::cout << b2 << std::endl;
+    std::cout << b3 << std::endl;
+    cmsg("Now let's try to call the execute member function to check that polymorphism works properly :");
+    form_1->execute(b1);
+    cmsg("since the form_1 * (pointer) points to a PresidentialPardonForm object, we can see that polymorphism works properly");
+    testOk(1);
+
+    test("Executing 3 different forms with top-grade Bureaucrat");
     try {
-        cmsg("We can instanciate an object with the same identifier as the one before since it wasn't able to construct itself properly");
-        AForm test("test form", 1, 160);
-    }
-    catch (std::exception e2)
-    {
-        std::cerr << e2.what();
-        testOk(0);
-        cmsg("\nSince we didn't pass e2 by reference, object slicing occured and we obtained standard message\n");
-    }
-    testOk(1);
-
-
-    /////////////////////////////////////////////////////////////////////////////
-    test("forms constructors, overloads etc...");
-    cmsg("Here we basically perform the same basic tests as before \nwhile also checking the stream insertion overload <<");
-    AForm f1("first form of the day", 3, 5);
-    AForm f2(f1);
-    AForm f3("third form of the day", 76, 88);
-    std::cout << "[f1] " << f1 << std::endl;
-    std::cout << "[f2] " << f2 << std::endl;
-    std::cout << "[f3] " <<f3 << std::endl;
-    cmsg("assignign f2 to f3 : nothing should happen");
-    f3 = f2;
-    std::cout << "[f3] " << f3 << std::endl;
-    testOk(1);
-
-
-    /////////////////////////////////////////////////////////////////////////////
-    test("AForm's getter functions...");
-    std::cout << "[f3] exec grade = " << f3.getExecGrade() << std::endl;
-    std::cout << "[f3] sign grade = " << f3.getSignGrade() << std::endl;
-    std::cout << "[f3] name       = " << f3.getName() << std::endl;
-    std::cout << "[f3] status     = " << f3.getStatus() << std::endl;
-    testOk(1);
-
-    /////////////////////////////////////////////////////////////////////////////
-    test("Bureaucrats & AForms interaction...");
-    cmsg("Bureaucrat [k][75] tries to sign form [f1][3][5], this should throw an exception !");
-    std::cout << "[f1] status     = " << f1.getStatus() << std::endl;
-    try{
-        k.signForm(f1);
+        b1.executeForm(*form_1);
     }
     catch (std::exception &e)
     {
-        std::cerr << e.what();
-        testOk(0);
+        std::cout << e.what() << std::endl;
     }
-    cmsg("Let's try with someone more competent :");
-    Bureaucrat b("Boss", 1);
-    b.signForm(f1);
-    std::cout << "[f1] status     = " << f1.getStatus() << std::endl;
+    try {
+            b1.executeForm(*form_2);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    try {
+            b1.executeForm(*form_3);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
     testOk(1);
+
+    test("Executing 3 different forms with mid-grade Bureaucrat, this time using [shrub_3] to prove that we get 2 files and that execute is working properly");
+    try {
+            b2.executeForm(*form_1);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    try {
+            b2.executeForm(shrub_3);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    try {
+        b2.executeForm(*form_3);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    testOk(1);
+
+    test("Executing 3 different forms with low-grade Bureaucrat");
+    try {
+            b3.executeForm(*form_1);
+    }
+    catch (std::exception &e)
+    {
+            std::cout << e.what() << std::endl;
+    }
+    try {
+            b3.executeForm(*form_2);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    try {
+        b3.executeForm(*form_3);
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    testOk(1);
+
+    test("Randomness");
+    cmsg("Lastly, let's see if Robotomy's randomness is implemented correctly :");
+    for (int i = 0 ; i < 100 ; ++i)
+    {
+        b1.executeForm(*form_3);
+    }
+    cmsg("Just run the command : <./forms.exe | grep failed | wc -l> the result should be around 50");
+    testOk(1);
+    delete form_1;
+    delete form_2;
+    delete form_3;
     return (0);
 }

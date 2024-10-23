@@ -5,9 +5,17 @@
 
 class PresidentialPardonForm : public AForm
 {
-    virtual void beSigned(const Bureaucrat &);
-
-
+    private:
+        std::string target_;
+        void dummy() const;
+    public:
+    PresidentialPardonForm(const std::string);
+    PresidentialPardonForm(const PresidentialPardonForm &);
+    PresidentialPardonForm &operator=(const PresidentialPardonForm &);
+    ~PresidentialPardonForm();
+    void setTarget(const std::string);
+    std::string getTarget() const;
+    void execute(const Bureaucrat &) const;
 };
 
 #endif

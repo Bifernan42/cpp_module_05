@@ -61,6 +61,11 @@ std::ostream &operator<<(std::ostream &out, const Form &f)
 
 void Form::beSigned(const Bureaucrat &b)
 {
+    if (getStatus() == true)
+    {
+        std::cout << "Form : " << getName() << " : Already signed !\n";
+        return ;
+    }
     if (b.getGrade() <= this->getSignGrade())
         this->isSigned_ = true;
     else

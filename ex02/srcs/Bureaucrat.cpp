@@ -1,5 +1,6 @@
 #include "../includes/Bureaucrat.hpp"
 #include "../includes/AForm.hpp"
+#include <exception>
 
 Bureaucrat::Bureaucrat(): name_("noname"), grade_(150) {}
 
@@ -94,4 +95,18 @@ void Bureaucrat::signForm(AForm &f) const
         std::cout << this->getName() << " signed " << f.getName() << ".\n";
     else
         std::cout << this->getName() << " couldn't sign " << f.getName() << "because its grade was too low.\n";
+}
+
+void Bureaucrat::executeForm(AForm const &form) const
+{
+    try
+    {
+        form.execute(*this);
+    }
+    catch (std::exception &e)
+    {
+        std::string msg = "Bureaucrat: Error: couldn't execute form <" + form.getName() + ">";
+        throw Bureaucrat::GradeTooLowException(msg);
+    }
+    std::cout << getName() << " executed " << form.getName() << std::endl;
 }

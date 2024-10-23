@@ -1,6 +1,6 @@
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iincludes
-SRCS = srcs/main.cpp srcs/Bureaucrat.cpp srcs/AForm.cpp
+CXXFLAGS =  -Wall -Wextra -Werror -std=c++98 -Iincludes
+SRCS = srcs/main.cpp srcs/Bureaucrat.cpp srcs/AForm.cpp srcs/ShrubberyCreationForm.cpp srcs/PresidentialPardonForm.cpp srcs/RobotomyRequestForm.cpp
 OBJS = $(SRCS:.cpp=.o)
 NAME = forms.exe
 

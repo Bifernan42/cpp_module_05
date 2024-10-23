@@ -24,6 +24,7 @@ class Bureaucrat
 		Bureaucrat &operator++();
 		Bureaucrat &operator--();
 		void signForm(AForm &) const;
+		void executeForm(AForm const &) const;
 };
 
 class Bureaucrat::GradeTooHighException : public std::exception

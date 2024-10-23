@@ -25,6 +25,8 @@ name_(name), isSigned_(false), signGrade_(signGrade), execGrade_(execGrade)
     }
 }
 
+AForm::AForm(const AForm &other): name_(other.getName()), isSigned_(other.getStatus()), signGrade_(other.getSignGrade()), execGrade_(other.getExecGrade()) {}
+
 AForm &AForm::operator=(const AForm &)
 {
     return *this;
@@ -61,6 +63,11 @@ std::ostream &operator<<(std::ostream &out, const AForm &f)
 
 void AForm::beSigned(const Bureaucrat &b)
 {
+    if (getStatus() == true)
+    {
+        std::cout << "Form : " << getName() << " : Already signed !\n";
+        return ;
+    }
     if (b.getGrade() <= this->getSignGrade())
         this->isSigned_ = true;
     else
@@ -90,4 +97,10 @@ AForm::GradeTooLowException::~GradeTooLowException() throw (){}
 const char *AForm::GradeTooLowException::what() const throw()
 {
     return errorMessage_.c_str();
+}
+
+void AForm::execute(const Bureaucrat &b) const
+{
+    if (b.getGrade() > this->getExecGrade())
+        throw AForm::GradeTooLowException("\033[31mError: AForm: cannot be executed: grade too low !\033[0m\n");
 }
